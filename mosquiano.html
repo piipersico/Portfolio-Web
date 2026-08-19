@@ -13,8 +13,9 @@
   --ink:#201e1d; --mag:#c3007a; --mag-soft:#fdeaf4; --paper:#fbf9f7; --card:#ffffff;
   --line:#ece6e2;
   --mute:#6f6a68; --r:28px; --edge:clamp(20px,5vw,64px);
+  --sel-bg:rgba(195,0,122,.10); --sel-handle:rgba(195,0,122,.42);
   --shell:1160px;           /* el mismo ancho que el home */
-  --label:200px;            /* columna de los títulos de sección */
+  --label:250px;            /* columna de los títulos de sección */
   --font-heading:'Bricolage Grotesque','Nunito Sans',system-ui,sans-serif;
   --font-body:'Nunito Sans',system-ui,sans-serif;
 }
@@ -74,8 +75,29 @@ h1 { font-family: var(--font-heading); font-weight: 800; font-size: clamp(30px,5
 .pp-lede { font-size: clamp(16px,1.5vw,18px); line-height: 1.6; color: var(--mute);
   margin: 16px 0 0; max-width: 46ch; }
 
-h2 { font-family: var(--font-heading); font-weight: 800; font-size: 13px; letter-spacing: .06em;
+h2 { font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: .06em;
   text-transform: uppercase; color: var(--ink); margin: 0 0 10px; }
+
+/* Zócalo de los subtítulos: el resaltado de selección de iOS pero en rosa, con
+   sus dos manijas. El texto va en un <span> porque el h2 es hijo directo del
+   grid y ahí un inline-block se blockifica: se estiraría a toda la columna en
+   vez de abrazar la palabra. Las manijas son los ::before/::after, cada una
+   dibujada con dos capas de background (el puntito y la barra). */
+h2 span { position: relative; display: inline-block;
+  background: var(--sel-bg); border-radius: 3px; padding: 4px 8px; }
+h2 span::before, h2 span::after { content: ''; position: absolute; width: 12px;
+  pointer-events: none; background-repeat: no-repeat;
+  background-image:
+    radial-gradient(circle at 6px 6px, var(--sel-handle) 5.2px, transparent 5.6px),
+    linear-gradient(var(--sel-handle), var(--sel-handle)); }
+/* la de arranque: puntito arriba y barra que baja */
+h2 span::before { left: -6px; top: -11px; bottom: 0;
+  background-size: 12px 12px, 2.5px calc(100% - 6px);
+  background-position: 0 0, 4.75px 6px; }
+/* la de cierre: barra que baja y puntito abajo */
+h2 span::after { right: -6px; top: 0; bottom: -11px;
+  background-size: 12px 12px, 2.5px calc(100% - 6px);
+  background-position: 0 100%, 4.75px 0; }
 p { font-size: 15.5px; line-height: 1.68; color: var(--mute); margin: 0; }
 
 /* imagen: si el archivo no está, el bloque entero desaparece (nada de cajas vacías) */
@@ -199,12 +221,12 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
   </div>
 
   <div class="pp-block">
-    <h2>Contexto</h2>
+    <h2><span>Contexto</span></h2>
     <p>Para realizar este ensayo, elegí Mosquiano, una marca argentina de cosmética creada por la influencer Sele Mosca, conocida por su fuerte conexión con una comunidad joven en redes sociales. Me interesó por ser un caso real de una marca que crece muy rápido apoyada casi por completo en la imagen de su fundadora, algo cada vez más común entre marcas nacidas en redes.</p>
   </div>
 
   <div class="pp-block">
-    <h2>Metodología</h2>
+    <h2><span>Metodología</span></h2>
     <p>Hice un análisis exhaustivo combinando varias herramientas de marketing estratégico, analizando a su vez a la competencia de la marca:</p>
     <div class="pp-chip-groups">
       <div>
@@ -232,7 +254,7 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
   </div>
 
   <div class="pp-block">
-    <h2>Problema encontrado</h2>
+    <h2><span>Problema encontrado</span></h2>
     <div class="pp-stat-row">
       <p class="pp-stat-num big">80%</p>
       <p>La marca depende en un 80% del alcance y la credibilidad de una sola persona, Sele Mosca. Es una fortaleza a corto plazo, pero un riesgo estructural, si su reputación se ve afectada, la marca cae con ella. Confirmamos este riesgo con las herramientas empleadas.</p>
@@ -247,7 +269,7 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
   </div>
 
   <div class="pp-block" style="margin-top:0">
-    <h2>Propuesta</h2>
+    <h2><span>Propuesta</span></h2>
     <p>Con eso armé una propuesta de estrategia de comunicación para construir marca de comunidad, no solo marca de una persona: un mensaje central ("Animate a destacar"), sumar múltiples creadoras que generen contenido (UGC) en lugar de depender de una sola cara. Definí objetivos concretos junto con un índice propio para medir la autonomía de la marca respecto de su fundadora.</p>
     <div class="pp-stats">
       <div>
