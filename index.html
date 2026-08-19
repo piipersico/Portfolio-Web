@@ -295,6 +295,12 @@ h2:hover { font-variation-settings: "wght" 800, "wdth" 82; }
 .pp-sobre-txt > p { max-width: 86ch; }
 .pp-sobre-txt > p:first-child { margin-top: 0; }
 
+/* link secundario de las cards de Trabajos (menos peso visual que el pp-cta) */
+.pp-case-link { color: var(--mute); }
+.pp-case-link:hover { color: var(--mag); }
+.pp-case-link svg { transition: transform .2s ease; }
+.pp-case-link:hover svg { transform: translateX(2px); }
+
 /* aparición al scrollear */
 .pp-r { opacity: 0; transform: translateY(8px); }
 .pp-r.pp-in { opacity: 1; transform: none; transition: opacity .5s ease, transform .5s cubic-bezier(.25,.8,.35,1); }
@@ -491,9 +497,12 @@ h2:hover { font-variation-settings: "wght" 800, "wdth" 82; }
             <img class="pp-case-img" src="/images/mosquiano/hero.jpg" alt="Mosquiano" onerror="this.closest('.pp-vid').setAttribute('data-missing','1')" onload="this.closest('.pp-vid').setAttribute('data-missing','0')">
             <p class="pp-vid-missing">Falta <b>/images/mosquiano/hero.jpg</b><span>Dejá ahí la foto destacada de Mosquiano y aparece sola</span></p>
           </div>
-          <h3 style="font-family:var(--font-heading);font-weight:800;font-size:19px;letter-spacing:-0.01em;margin:18px 0 0"><a href="mosquiano.html" style="color:var(--mag)">Auditoría y propuesta de marca — MOSQUIANO →</a></h3>
-          <p style="font-size:15px;line-height:1.6;color:var(--mute);margin:6px 0 0;max-width:46ch">Análisis de marca y propuesta de estrategia de comunicación para una marca de cosmética.</p>
-          <a href="mosquiano.html" class="pp-cta" style="display:inline-block;margin-top:14px;transform:none">Ver caso completo →</a>
+          <h3 style="font-family:var(--font-heading);font-weight:800;font-size:19px;letter-spacing:-0.01em;margin:18px 0 0"><a href="mosquiano.html" style="color:var(--mag)">Mosquiano →</a></h3>
+          <p style="font-size:15px;line-height:1.6;color:var(--mute);margin:6px 0 0;max-width:46ch">Auditoría y propuesta de marca</p>
+          <a href="mosquiano.html" class="pp-case-link" style="display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-size:13.5px;font-weight:600;text-decoration:none">
+            Ver caso completo
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
         </article>
       </div>
     </section>
