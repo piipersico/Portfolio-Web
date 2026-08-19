@@ -478,6 +478,7 @@
     var timer = 0;
 
     function wrapOf(v) { return v.closest('.pp-vid'); }
+    function videoOf(w) { return w ? w.querySelector('.pp-video') : null; }
 
     function muteAll() {
       list.forEach(function (v) {
@@ -486,6 +487,70 @@
         if (w) w.setAttribute('data-sound', 'off');
       });
     }
+
+    /* Dos pausas distintas: la del scroll (el video se fue de pantalla) y la de
+       la persona (tocó pausa). Sólo la segunda manda: si pausó a mano, volver a
+       scrollear no se lo tiene que arrancar de nuevo por atrás. */
+    function userPaused(v) { return v.dataset.ppUser === 'paused'; }
+
+    function sync(v) {
+      var w = wrapOf(v);
+      if (!w) return;
+      w.setAttribute('data-paused', v.paused ? '1' : '0');
+      w.setAttribute('data-upaused', v.paused && userPaused(v) ? '1' : '0');
+      var b = w.querySelector('.pp-play');
+      if (b) b.setAttribute('aria-label', v.paused ? 'Reproducir' : 'Pausar');
+    }
+
+    function rawPlay(v) {
+      var pr = v.play();
+      if (pr && pr.catch) pr.catch(function () { /* autoplay bloqueado: queda el poster */ });
+    }
+    function play(v) { delete v.dataset.ppUser; rawPlay(v); sync(v); }
+    function pause(v) { v.dataset.ppUser = 'paused'; v.pause(); sync(v); }
+    function toggle(v) { if (v.paused) play(v); else pause(v); }
+
+    /* Pantalla completa sobre el contenedor, así los botones siguen encima del
+       video. En iPhone no se puede agrandar un div: ahí va el <video> solo, con
+       la barra nativa del sistema. */
+    function fsNow() { return document.fullscreenElement || document.webkitFullscreenElement || null; }
+
+    function iosFs(v) {
+      if (v && v.webkitEnterFullscreen) { v.controls = true; v.webkitEnterFullscreen(); return true; }
+      return false;
+    }
+
+    function toggleFs(w) {
+      var v = videoOf(w);
+      if (!v) return;
+      if (fsNow()) {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        return;
+      }
+      if (w.requestFullscreen) {
+        var pr = w.requestFullscreen();
+        if (pr && pr.catch) pr.catch(function () { iosFs(v); });
+      } else if (w.webkitRequestFullscreen) {
+        w.webkitRequestFullscreen();
+      } else {
+        iosFs(v);
+      }
+    }
+
+    function onFsChange() {
+      var fs = fsNow();
+      document.querySelectorAll('.pp-vid').forEach(function (w) {
+        var on = (w === fs);
+        w.setAttribute('data-fs', on ? '1' : '0');
+        var v = videoOf(w);
+        if (v) v.controls = on || REDUCE;   // en grande sí conviene la barra nativa entera
+        var b = w.querySelector('.pp-fs');
+        if (b) b.setAttribute('aria-label', on ? 'Salir de pantalla completa' : 'Ver en grande');
+      });
+    }
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
 
     // carga diferida: el src se asigna recién cuando la card se acerca
     var loader = new IntersectionObserver(function (entries) {
@@ -505,10 +570,10 @@
       entries.forEach(function (en) {
         var v = en.target;
         if (en.isIntersecting && en.intersectionRatio >= 0.4) {
-          if (REDUCE) return;
-          var pr = v.play();
-          if (pr && pr.catch) pr.catch(function () { /* autoplay bloqueado: queda el poster */ });
+          if (REDUCE || userPaused(v)) return;
+          rawPlay(v);
         } else {
+          if (fsNow()) return;   // en pantalla completa el scroll de atrás no cuenta
           v.pause();
           if (!v.muted) muteAll(); // si se va de pantalla con sonido, se apaga
         }
@@ -529,6 +594,12 @@
           var w = wrapOf(v);
           if (w) w.setAttribute('data-missing', '1');
         });
+        ['play', 'pause', 'ended'].forEach(function (ev) {
+          v.addEventListener(ev, function () { sync(v); });
+        });
+        var w = wrapOf(v);
+        if (w) w.setAttribute('data-playable', '1');   // habilita el click en todo el video
+        sync(v);
         list.push(v);
         loader.observe(v);
         player.observe(v);
@@ -541,28 +612,47 @@
     }).observe(document.body, { childList: true, subtree: true });
 
     document.addEventListener('click', function (e) {
-      var btn = e.target.closest && e.target.closest('.pp-sound');
-      if (!btn) return;
-      var w = btn.closest('.pp-vid');
-      var v = w && w.querySelector('.pp-video');
-      if (!v) return;
-      var turningOn = v.muted;
-      muteAll();                      // el sonido es de a uno
-      if (turningOn) {
-        v.muted = false;
-        w.setAttribute('data-sound', 'on');
-        btn.setAttribute('aria-label', 'Silenciar');
-        var pr = v.play();
-        if (pr && pr.catch) pr.catch(function () {});
-      } else {
-        btn.setAttribute('aria-label', 'Activar sonido');
+      if (!e.target.closest) return;
+
+      var playBtn = e.target.closest('.pp-play');
+      if (playBtn) {
+        var pv = videoOf(playBtn.closest('.pp-vid'));
+        if (pv) toggle(pv);
+        return;
       }
+
+      var fsBtn = e.target.closest('.pp-fs');
+      if (fsBtn) { toggleFs(fsBtn.closest('.pp-vid')); return; }
+
+      var btn = e.target.closest('.pp-sound');
+      if (btn) {
+        var w = btn.closest('.pp-vid');
+        var v = videoOf(w);
+        if (!v) return;
+        var turningOn = v.muted;
+        muteAll();                      // el sonido es de a uno
+        if (turningOn) {
+          v.muted = false;
+          w.setAttribute('data-sound', 'on');
+          btn.setAttribute('aria-label', 'Silenciar');
+          play(v);                      // querer escucharlo es querer verlo
+        } else {
+          btn.setAttribute('aria-label', 'Activar sonido');
+        }
+        return;
+      }
+
+      // click en el video mismo: pausa y sigue
+      var cw = e.target.closest('.pp-vid');
+      var cv = videoOf(cw);
+      if (!cv || cv.controls) return;   // con la barra nativa puesta, manda ella
+      toggle(cv);
     });
 
     document.addEventListener('visibilitychange', function () {
       if (!document.hidden) return;
       muteAll();
-      list.forEach(function (v) { v.pause(); });
+      list.forEach(function (v) { v.pause(); });   // pausa del sistema, no de la persona
     });
   }
 
