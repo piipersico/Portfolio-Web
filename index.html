@@ -217,7 +217,7 @@ h2:hover { font-variation-settings: "wght" 800, "wdth" 82; }
 /* ============ VIDEOS DE TRABAJOS ============
    Autoplay mudo y en loop sólo mientras se ven. El mp4 no se descarga hasta que
    la card se acerca al viewport: preload="none" + src diferido desde data-src. */
-.pp-vid .pp-video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pp-vid .pp-video, .pp-vid .pp-case-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pp-vid .pp-sound { position: absolute; right: 12px; bottom: 12px; z-index: 2;
   display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 0;
   border-radius: 999px; background: rgba(32,30,29,.55); backdrop-filter: blur(6px);
@@ -239,7 +239,7 @@ h2:hover { font-variation-settings: "wght" 800, "wdth" 82; }
 .pp-vid-missing b { color: var(--mag); font-weight: 700; }
 .pp-vid-missing span { display: block; font-size: 12.5px; opacity: .8; margin-top: 6px; }
 .pp-vid[data-missing="1"] .pp-vid-missing { display: grid; }
-.pp-vid[data-missing="1"] .pp-video, .pp-vid[data-missing="1"] .pp-sound { display: none; }
+.pp-vid[data-missing="1"] .pp-video, .pp-vid[data-missing="1"] .pp-sound, .pp-vid[data-missing="1"] .pp-case-img { display: none; }
 
 /* ============ SERVICIOS EN CARPETAS ============
    Cada servicio es una carpeta: pestaña arriba, una hoja asomando detrás y la
@@ -442,7 +442,7 @@ h2:hover { font-variation-settings: "wght" 800, "wdth" 82; }
 
     <section id="trabajos" style="padding:clamp(32px,5vw,64px) 0">
       <div style="display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:28px">
-        <h2 style="font-family:var(--font-heading);font-weight:800;font-size:clamp(26px,3.2vw,38px);line-height:1.08;letter-spacing:-0.008em;margin:0">Algunas producciones</h2>
+        <h2 style="font-family:var(--font-heading);font-weight:800;font-size:clamp(26px,3.2vw,38px);line-height:1.08;letter-spacing:-0.008em;margin:0">Algunos trabajos</h2>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(20px,3vw,32px)">
         <article>
@@ -484,6 +484,16 @@ h2:hover { font-variation-settings: "wght" 800, "wdth" 82; }
           </div>
           <h3 style="font-family:var(--font-heading);font-weight:800;font-size:19px;letter-spacing:-0.01em;margin:18px 0 0"><a href="#contacto" style="color:var(--mag)">Mercado Libre →</a></h3>
           <p style="font-size:15px;line-height:1.6;color:var(--mute);margin:6px 0 0;max-width:46ch">Spot audiovisual académico. Dirección, producción, creatividad, iluminación y edición.</p>
+        </article>
+        <article>
+          <!-- ACÁ VA UNA FOTO DE MOSQUIANO (la subís vos): dejá el archivo en /images/mosquiano/hero.jpg y aparece sola -->
+          <div class="pp-vid" data-missing="1" style="position:relative;width:100%;aspect-ratio:16 / 9;border-radius:var(--r);overflow:hidden;background:var(--mag-soft)">
+            <img class="pp-case-img" src="/images/mosquiano/hero.jpg" alt="Mosquiano" onerror="this.closest('.pp-vid').setAttribute('data-missing','1')" onload="this.closest('.pp-vid').setAttribute('data-missing','0')">
+            <p class="pp-vid-missing">Falta <b>/images/mosquiano/hero.jpg</b><span>Dejá ahí la foto destacada de Mosquiano y aparece sola</span></p>
+          </div>
+          <h3 style="font-family:var(--font-heading);font-weight:800;font-size:19px;letter-spacing:-0.01em;margin:18px 0 0"><a href="mosquiano.html" style="color:var(--mag)">Auditoría y propuesta de marca — MOSQUIANO →</a></h3>
+          <p style="font-size:15px;line-height:1.6;color:var(--mute);margin:6px 0 0;max-width:46ch">Análisis de marca y propuesta de estrategia de comunicación para una marca de cosmética.</p>
+          <a href="mosquiano.html" class="pp-cta" style="display:inline-block;margin-top:14px;transform:none">Ver caso completo →</a>
         </article>
       </div>
     </section>
