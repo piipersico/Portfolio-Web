@@ -7,6 +7,7 @@
 <meta name="description" content="Auditoría de marca y propuesta de estrategia de comunicación para MOSQUIANO, la marca de cosmética de Sele Mosca. Caso de Pilar Pérsico.">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,700;12..96,75..100,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;1,6..12,400&display=swap">
+<script src="./assets/js/pp-motion.js?v=6"></script>
 <style>
 :root {
   --ink:#201e1d; --mag:#c3007a; --mag-soft:#fdeaf4; --paper:#fbf9f7; --card:#ffffff;
@@ -25,15 +26,24 @@ a { color: var(--ink); text-decoration: none; }
 a:hover { color: var(--mag); }
 :focus-visible { outline: 2px solid var(--mag); outline-offset: 3px; border-radius: 8px; }
 
-/* fondo: misma familia visual que el home, pero quieto (acá se viene a leer) */
-#pp-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none;
-  background:
-    radial-gradient(820px circle at 84% -8%, rgba(195,0,122,.11), rgba(195,0,122,0) 62%),
-    radial-gradient(620px circle at 2% 32%, rgba(195,0,122,.06), rgba(195,0,122,0) 60%),
-    var(--paper); }
-#pp-grain { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .05;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E"); }
+/* ============ FONDO VIVO ============
+   Lo arma pp-motion.js igual que en el home: un canvas de manchas de color que
+   se mueven solas, otro de formas (asteriscos, estrellas, halftone) con
+   parallax de mouse y scroll, y el grano de papel arriba de todo. */
+#pp-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
+#pp-bg canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#pp-bg .pp-blobs { filter: blur(44px) saturate(118%); transform: scale(1.16); opacity: .95; }
+#pp-spot { position: absolute; inset: -25%;
+  background: radial-gradient(460px circle at var(--mx,50%) var(--my,38%), rgba(195,0,122,.13), rgba(195,0,122,0) 64%); }
+#pp-grain { position: fixed; inset: -140px; z-index: -1; pointer-events: none; opacity: .05; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: pp-grain 1.05s steps(3) infinite; }
+@keyframes pp-grain {
+  0%   { transform: translate3d(0,0,0); }
+  33%  { transform: translate3d(-9px,6px,0); }
+  66%  { transform: translate3d(7px,-8px,0); }
+  100% { transform: translate3d(0,0,0); }
+}
 
 /* barra de arriba: en una página larga tiene que haber salida siempre a mano */
 .pp-head { position: sticky; top: 0; z-index: 30; background: rgba(251,249,247,.72);
@@ -74,6 +84,10 @@ p { font-size: 15.5px; line-height: 1.68; color: var(--mute); margin: 0; }
   border: 1px solid rgba(32,30,29,.06); box-shadow: 0 24px 50px -34px rgba(32,30,29,.5); }
 .pp-fig img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pp-fig[hidden] { display: none; }
+/* El hero recorta a 3:2. La foto original es casi cuadrada (1034x862): a 3:2
+   queda horizontal sin comerse ni el celular de arriba ni los productos de
+   abajo, que es lo que pasaba a 16:9. */
+.pp-fig-hero { aspect-ratio: 3 / 2; }
 .pp-fig-wide { margin: clamp(32px,4.5vw,48px) 0 0; aspect-ratio: 21 / 9; }
 
 /* ---------- SECCIONES: rótulo a la izquierda, contenido a la derecha ---------- */
@@ -82,6 +96,13 @@ p { font-size: 15.5px; line-height: 1.68; color: var(--mute); margin: 0; }
   border: 1px solid rgba(195,0,122,.16); border-radius: 999px; padding: 6px 14px;
   font-size: 13px; font-weight: 600; }
 .pp-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+/* Dos grupos: con qué lo analicé y contra quién lo comparé. Los competidores
+   van en gris para que no compitan visualmente con las herramientas. */
+.pp-chip-groups { display: grid; gap: clamp(18px,2vw,24px); margin-top: 18px; }
+.pp-chip-groups .pp-chips { margin-top: 0; }
+.pp-chip-cap { font-size: 12px; font-weight: 600; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--mute); margin: 0 0 10px; }
+.pp-chip-alt { background: var(--card); color: var(--mute); border-color: var(--line); }
 
 /* dato + explicación */
 .pp-stat-row { display: grid; grid-template-columns: auto minmax(0,1fr);
@@ -142,14 +163,12 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
 .pp-r.pp-in { opacity: 1; transform: none; transition: opacity .5s ease, transform .5s cubic-bezier(.25,.8,.35,1); }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  #pp-grain { animation: none; }
   .pp-r, .pp-r.pp-in { opacity: 1; transform: none; transition: none; }
 }
 </style>
 </head>
-<body>
-
-<div id="pp-bg" aria-hidden="true"></div>
-<div id="pp-grain" aria-hidden="true"></div>
+<body data-pp-no-type>
 
 <header class="pp-head">
   <div class="pp-head-in">
@@ -170,30 +189,45 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
       <p class="pp-lede">Una marca que crece rápido apoyada en una sola cara. Qué encontré al auditarla y qué propuse para que la marca se sostenga sola.</p>
     </div>
 
-    <!-- FOTO DESTACADA: el archivo es assets/SeleMosca.jpg. Si lo cambiás por otro,
-         actualizá el src de acá abajo. Si el archivo no está, el bloque no se muestra. -->
-    <figure class="pp-fig">
-      <img src="assets/SeleMosca.jpg" alt="Sele Mosca, fundadora de Mosquiano" loading="eager"
+    <!-- FOTO DESTACADA: el archivo es assets/mosquiano.png. Si lo cambiás por otro,
+         actualizá el src de acá abajo; no hace falta que sea de una proporción
+         concreta, el bloque se adapta. Si el archivo no está, no se muestra. -->
+    <figure class="pp-fig pp-fig-hero">
+      <img src="assets/mosquiano.png" alt="Productos de Mosquiano junto a un celular con una selfie de Sele Mosca" loading="eager"
         onerror="this.closest('.pp-fig').hidden = true">
     </figure>
   </div>
 
   <div class="pp-block">
     <h2>Contexto</h2>
-    <p>Elegí Mosquiano, una marca argentina de cosmética creada por la influencer Sele Mosca, conocida por sus delineadores UV y su fuerte conexión con una comunidad joven en redes sociales. Me interesó por ser un caso real de una marca que crece muy rápido apoyada casi por completo en la imagen de su fundadora, algo cada vez más común entre marcas nacidas en redes.</p>
+    <p>Para realizar este ensayo, elegí Mosquiano, una marca argentina de cosmética creada por la influencer Sele Mosca, conocida por su fuerte conexión con una comunidad joven en redes sociales. Me interesó por ser un caso real de una marca que crece muy rápido apoyada casi por completo en la imagen de su fundadora, algo cada vez más común entre marcas nacidas en redes.</p>
   </div>
 
   <div class="pp-block">
     <h2>Metodología</h2>
-    <p>Hice un análisis exhaustivo combinando varias herramientas de marketing estratégico: arquitectura de marca y Brand Key, mapa de posicionamiento frente a competidores (Wanda Cosmetics, Zaira Beauty, Amis, Serendipity), análisis FODA y PESTEL, arquetipos de marca (Jung), la Pirámide de Maslow aplicada al producto, una encuesta propia al público objetivo, además de relevamiento de fuentes secundarias (sitio oficial de la marca, redes, normativa ANMAT).</p>
-    <div class="pp-chips">
-      <span class="pp-chip">Brand Key</span>
-      <span class="pp-chip">Mapa de posicionamiento</span>
-      <span class="pp-chip">FODA</span>
-      <span class="pp-chip">PESTEL</span>
-      <span class="pp-chip">Arquetipos de Jung</span>
-      <span class="pp-chip">Pirámide de Maslow</span>
-      <span class="pp-chip">Encuesta propia</span>
+    <p>Hice un análisis exhaustivo combinando varias herramientas de marketing estratégico, analizando a su vez a la competencia de la marca:</p>
+    <div class="pp-chip-groups">
+      <div>
+        <p class="pp-chip-cap">Herramientas</p>
+        <div class="pp-chips">
+          <span class="pp-chip">Brand Key</span>
+          <span class="pp-chip">Mapa de posicionamiento</span>
+          <span class="pp-chip">FODA</span>
+          <span class="pp-chip">PESTEL</span>
+          <span class="pp-chip">Arquetipos de Jung</span>
+          <span class="pp-chip">Pirámide de Maslow</span>
+          <span class="pp-chip">Encuesta propia</span>
+        </div>
+      </div>
+      <div>
+        <p class="pp-chip-cap">Competencia analizada</p>
+        <div class="pp-chips">
+          <span class="pp-chip pp-chip-alt">Wanda Cosmetics</span>
+          <span class="pp-chip pp-chip-alt">Zaira Beauty</span>
+          <span class="pp-chip pp-chip-alt">Amis</span>
+          <span class="pp-chip pp-chip-alt">Serendipity</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -201,7 +235,7 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
     <h2>Problema encontrado</h2>
     <div class="pp-stat-row">
       <p class="pp-stat-num big">80%</p>
-      <p>Del cruce de esas herramientas surgió un problema central: la marca depende en un 80% del alcance y la credibilidad de una sola persona, Sele Mosca. Es una fortaleza a corto plazo, pero un riesgo estructural — si su reputación se ve afectada, la marca cae con ella. El FODA lo confirmaba desde otro ángulo: alta dependencia de la imagen de la fundadora, poco respaldo financiero y una plataforma de venta única.</p>
+      <p>La marca depende en un 80% del alcance y la credibilidad de una sola persona, Sele Mosca. Es una fortaleza a corto plazo, pero un riesgo estructural, si su reputación se ve afectada, la marca cae con ella. Confirmamos este riesgo con las herramientas empleadas.</p>
     </div>
   </div>
 
@@ -214,7 +248,7 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
 
   <div class="pp-block" style="margin-top:0">
     <h2>Propuesta</h2>
-    <p>Con eso armé una propuesta de estrategia de comunicación para construir marca de comunidad, no solo marca de una persona: un mensaje central ("Animate a destacar"), sumar múltiples creadoras que generen contenido (UGC) en lugar de depender de una sola cara, y activos propios de la comunidad para no depender de una sola plataforma. Definí objetivos concretos junto con un índice propio para medir la autonomía de la marca respecto de su fundadora.</p>
+    <p>Con eso armé una propuesta de estrategia de comunicación para construir marca de comunidad, no solo marca de una persona: un mensaje central ("Animate a destacar"), sumar múltiples creadoras que generen contenido (UGC) en lugar de depender de una sola cara. Definí objetivos concretos junto con un índice propio para medir la autonomía de la marca respecto de su fundadora.</p>
     <div class="pp-stats">
       <div>
         <p class="pp-stat-num small">20%</p>
@@ -251,14 +285,13 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
 </div>
 
 <script>
+/* pp-motion.js ya se encarga del fondo, del estado de scroll del header y de
+   revelar <section> y <footer>. Acá sólo faltan los bloques de esta página, que
+   son divs. El hero queda afuera a propósito: es lo primero que se ve, no tiene
+   que aparecer con delay. */
 (function () {
-  var root = document.documentElement;
-  function onScroll() { root.setAttribute('data-pp-scroll', (window.scrollY || 0) > 8 ? '1' : '0'); }
-  addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce || !('IntersectionObserver' in window)) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (en) {
       if (!en.isIntersecting) return;
@@ -266,8 +299,7 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
       io.unobserve(en.target);
     });
   }, { rootMargin: '0px 0px -6% 0px', threshold: 0.05 });
-  // el hero es lo que se ve al entrar: ese no se anima, aparece y listo
-  document.querySelectorAll('.pp-block, .pp-cta-row, footer').forEach(function (el) {
+  document.querySelectorAll('.pp-block, .pp-cta-row').forEach(function (el) {
     el.classList.add('pp-r');
     io.observe(el);
   });

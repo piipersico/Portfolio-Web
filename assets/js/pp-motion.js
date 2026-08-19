@@ -349,6 +349,10 @@
 
   function typeCycle() {
     if (REDUCE) return;
+    // La ruleta es del H1 del home. En una página de caso el título es largo y
+    // cambiar de fuente cada medio segundo lo vuelve ilegible: se apaga con
+    // data-pp-no-type en el body.
+    if (document.body.hasAttribute('data-pp-no-type')) return;
 
     // precarga: sin esto la primera vuelta parpadea con la fuente de fallback
     if (document.fonts && document.fonts.load) {
