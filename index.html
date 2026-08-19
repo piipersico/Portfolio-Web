@@ -223,7 +223,7 @@ a.pp-vid:hover .pp-case-img, a.pp-vid:focus-visible .pp-case-img { transform: sc
 /* Controles: play/pausa, sonido y agrandar. Aparecen con el hover; en táctil
    quedan siempre visibles, y si el video está pausado también, si no la persona
    no tiene con qué volver a arrancarlo. */
-.pp-vid-ctrls { position: absolute; right: 12px; bottom: 12px; z-index: 2;
+.pp-vid-ctrls { position: absolute; right: 12px; bottom: 22px; z-index: 2;
   display: flex; align-items: center; gap: 8px; }
 .pp-vbtn { display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 0;
   border-radius: 999px; background: rgba(32,30,29,.55); backdrop-filter: blur(6px);
@@ -260,6 +260,41 @@ a.pp-vid:hover .pp-case-img, a.pp-vid:focus-visible .pp-case-img { transform: sc
 
 /* El video se puede clickear entero para pausar y seguir. */
 .pp-vid[data-playable="1"] { cursor: pointer; }
+
+/* Barra de tiempo propia, no la nativa. La nativa aparece o no según el
+   navegador y el dispositivo, y encima en pantalla completa se encimaba con
+   estos botones: adelantar andaba en unos lados y en otros no. Con una propia
+   el comportamiento es el mismo en todos lados.
+   touch-action:none es lo que permite arrastrarla en el celular sin que el
+   gesto se lo lleve el scroll de la página. */
+.pp-vid-seek { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+  height: 18px; display: flex; align-items: flex-end; cursor: pointer;
+  touch-action: none; -webkit-tap-highlight-color: transparent;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .25s ease, transform .25s cubic-bezier(.2,.9,.2,1); }
+.pp-vid:hover .pp-vid-seek, .pp-vid-seek:focus-visible { opacity: 1; transform: none; }
+/* En táctil la barra es más alta: 18px es un blanco chico para el dedo, y los
+   botones suben para no pisarla. */
+@media (hover: none) {
+  .pp-vid-seek { opacity: 1; transform: none; height: 24px; }
+  .pp-vid-ctrls { bottom: 28px; }
+}
+.pp-vid[data-upaused="1"] .pp-vid-seek, .pp-vid[data-seeking="1"] .pp-vid-seek { opacity: 1; transform: none; }
+.pp-vid-seek-track { position: relative; width: 100%; height: 4px;
+  background: rgba(255,255,255,.34); }
+.pp-vid-seek-fill { position: absolute; top: 0; bottom: 0; left: 0; width: 0%;
+  background: var(--mag); }
+.pp-vid-seek-knob { position: absolute; top: 50%; left: 0; width: 12px; height: 12px;
+  margin: -6px 0 0 -6px; border-radius: 999px; background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.45); opacity: 0; transition: opacity .2s ease; }
+.pp-vid:hover .pp-vid-seek-knob, .pp-vid[data-seeking="1"] .pp-vid-seek-knob { opacity: 1; }
+.pp-vid[data-missing="1"] .pp-vid-seek { display: none; }
+
+/* Con movimiento reducido el video usa los controles nativos del navegador:
+   ahí los propios sobran y se encimarían con esos. */
+@media (prefers-reduced-motion: reduce) {
+  .pp-vid-ctrls, .pp-vid-seek, .pp-vid-badge { display: none; }
+}
 
 /* En pantalla completa manda el video: sin recorte, sin bordes redondeados. */
 .pp-vid:fullscreen { width: 100vw; height: 100vh; aspect-ratio: auto; border-radius: 0; background: #000; }
@@ -490,6 +525,12 @@ a.pp-vid:hover .pp-case-img, a.pp-vid:focus-visible .pp-case-img { transform: sc
             <div class="pp-vid-badge" aria-hidden="true">
               <span><svg viewBox="0 0 24 24" fill="currentColor" focusable="false"><path d="M8 5v14l11-7z"></path></svg></span>
             </div>
+            <div class="pp-vid-seek" role="slider" tabindex="0" aria-label="Barra de tiempo del video" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="pp-vid-seek-track">
+                <div class="pp-vid-seek-fill"></div>
+                <div class="pp-vid-seek-knob"></div>
+              </div>
+            </div>
             <div class="pp-vid-ctrls">
               <button type="button" class="pp-vbtn pp-play" aria-label="Pausar">
                 <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
@@ -537,6 +578,12 @@ a.pp-vid:hover .pp-case-img, a.pp-vid:focus-visible .pp-case-img { transform: sc
             <video class="pp-video" data-src="assets/video/mercado-libre.mp4" poster="assets/video/mercado-libre-poster.jpg" loop preload="none" playsinline aria-label="Spot Mercado Libre"></video>
             <div class="pp-vid-badge" aria-hidden="true">
               <span><svg viewBox="0 0 24 24" fill="currentColor" focusable="false"><path d="M8 5v14l11-7z"></path></svg></span>
+            </div>
+            <div class="pp-vid-seek" role="slider" tabindex="0" aria-label="Barra de tiempo del video" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="pp-vid-seek-track">
+                <div class="pp-vid-seek-fill"></div>
+                <div class="pp-vid-seek-knob"></div>
+              </div>
             </div>
             <div class="pp-vid-ctrls">
               <button type="button" class="pp-vbtn pp-play" aria-label="Pausar">

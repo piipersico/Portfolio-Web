@@ -14,6 +14,7 @@
   --line:#ece6e2;
   --mute:#6f6a68; --r:28px; --edge:clamp(20px,5vw,64px);
   --sel-bg:rgba(195,0,122,.10); --sel-handle:rgba(195,0,122,.42);
+  --node:26px; --rail-pad:40px; --node-top:3px;   /* riel de la línea de tiempo */
   --shell:1160px;           /* el mismo ancho que el home */
   --label:250px;            /* columna de los títulos de sección */
   --font-heading:'Bricolage Grotesque','Nunito Sans',system-ui,sans-serif;
@@ -141,9 +142,6 @@ p { font-size: 15.5px; line-height: 1.68; color: var(--mute); margin: 0; }
   border-radius: 20px; padding: clamp(18px,2vw,26px); }
 .pp-stat-label { font-size: 14px; line-height: 1.55; color: var(--mute); margin: 8px 0 0; max-width: 34ch; }
 
-.pp-arrow { display: flex; justify-content: center; margin: clamp(24px,3.5vw,40px) 0; }
-.pp-arrow svg { width: 34px; height: 34px; color: var(--mag); opacity: .55; }
-
 .pp-cta-row { margin: clamp(32px,4.5vw,56px) 0 0; padding-top: clamp(28px,4vw,40px);
   border-top: 1px solid var(--line);
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; }
@@ -158,11 +156,42 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
   margin-top: clamp(28px,4vw,44px); padding-top: clamp(20px,3vw,28px); border-top: 1px solid var(--line);
   font-size: 13.5px; color: var(--mute); }
 
+/* ---------- LÍNEA DE TIEMPO ----------
+   Las cuatro etapas cuelgan de un riel vertical. El riel apagado es la ruta
+   completa; encima va un relleno magenta cuya altura la maneja el scroll, así
+   se ve cuánto del caso llevás leído. Cada nodo se prende cuando el punto de
+   lectura (la mitad de la pantalla) lo pasa. */
+.pp-timeline { position: relative; padding-left: var(--rail-pad); }
+.pp-timeline-rail { position: absolute; left: calc(var(--node) / 2 - 1px); width: 2px;
+  background: var(--line); border-radius: 2px; pointer-events: none; }
+.pp-timeline-fill { position: absolute; left: 0; top: 0; width: 100%; height: 0;
+  background: linear-gradient(var(--mag), var(--mag)); border-radius: 2px;
+  transition: height .18s linear; }
+
+.pp-stage { position: relative; }
+.pp-stage::before { content: attr(data-step);
+  position: absolute; left: calc(var(--rail-pad) * -1); top: var(--node-top);
+  width: var(--node); height: var(--node); border-radius: 999px;
+  display: grid; place-items: center;
+  font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: .02em;
+  background: var(--paper); color: var(--mute);
+  border: 2px solid var(--line); box-shadow: 0 0 0 5px var(--paper);
+  transition: background .35s ease, color .35s ease, border-color .35s ease, transform .35s cubic-bezier(.25,.8,.35,1); }
+.pp-stage.is-on::before { background: var(--mag); color: #fff; border-color: var(--mag);
+  transform: scale(1.06); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-timeline-fill { transition: none; }
+  .pp-stage::before { transition: none; }
+}
+
 /* ---------- DE 900px PARA ARRIBA: se abre a dos columnas ----------
    El rótulo se va al margen izquierdo y el texto ocupa una columna medida
    (72ch), pegada al borde derecho. Así la página usa todo el ancho sin que
    los párrafos queden en renglones imposibles de leer. */
 @media (min-width: 900px) {
+  :root { --node:30px; --rail-pad:62px; --node-top:5px; }
+
   .pp-hero { grid-template-columns: minmax(0,1fr) minmax(0,520px);
     align-items: center; gap: clamp(32px,4vw,64px); }
 
@@ -175,9 +204,6 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
   .pp-block > h2 { grid-column: 1; margin: 0; padding-top: 5px; }
   .pp-block > *:not(h2) { grid-column: 2; }
 
-  .pp-arrow { display: grid; grid-template-columns: var(--label) minmax(0,72ch);
-    justify-content: space-between; column-gap: clamp(24px,4vw,64px); }
-  .pp-arrow svg { grid-column: 2; justify-self: center; }
 }
 
 /* aparición al scrollear, igual que en el home */
@@ -220,65 +246,62 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
     </figure>
   </div>
 
-  <div class="pp-block">
-    <h2><span>Contexto</span></h2>
-    <p>Para realizar este ensayo, elegí Mosquiano, una marca argentina de cosmética creada por la influencer Sele Mosca, conocida por su fuerte conexión con una comunidad joven en redes sociales. Me interesó por ser un caso real de una marca que crece muy rápido apoyada casi por completo en la imagen de su fundadora, algo cada vez más común entre marcas nacidas en redes.</p>
-  </div>
+  <div class="pp-timeline">
+    <div class="pp-timeline-rail" aria-hidden="true"><div class="pp-timeline-fill"></div></div>
 
-  <div class="pp-block">
-    <h2><span>Metodología</span></h2>
-    <p>Hice un análisis exhaustivo combinando varias herramientas de marketing estratégico, analizando a su vez a la competencia de la marca:</p>
-    <div class="pp-chip-groups">
-      <div>
-        <p class="pp-chip-cap">Herramientas</p>
-        <div class="pp-chips">
-          <span class="pp-chip">Brand Key</span>
-          <span class="pp-chip">Mapa de posicionamiento</span>
-          <span class="pp-chip">FODA</span>
-          <span class="pp-chip">PESTEL</span>
-          <span class="pp-chip">Arquetipos de Jung</span>
-          <span class="pp-chip">Pirámide de Maslow</span>
-          <span class="pp-chip">Encuesta propia</span>
+    <div class="pp-block pp-stage" data-step="01">
+      <h2><span>Contexto</span></h2>
+      <p>Para realizar este ensayo, elegí Mosquiano, una marca argentina de cosmética creada por la influencer Sele Mosca, conocida por su fuerte conexión con una comunidad joven en redes sociales. Me interesó por ser un caso real de una marca que crece muy rápido apoyada casi por completo en la imagen de su fundadora, algo cada vez más común entre marcas nacidas en redes.</p>
+    </div>
+
+    <div class="pp-block pp-stage" data-step="02">
+      <h2><span>Metodología</span></h2>
+      <p>Hice un análisis exhaustivo combinando varias herramientas de marketing estratégico, analizando a su vez a la competencia de la marca:</p>
+      <div class="pp-chip-groups">
+        <div>
+          <p class="pp-chip-cap">Herramientas</p>
+          <div class="pp-chips">
+            <span class="pp-chip">Brand Key</span>
+            <span class="pp-chip">Mapa de posicionamiento</span>
+            <span class="pp-chip">FODA</span>
+            <span class="pp-chip">PESTEL</span>
+            <span class="pp-chip">Arquetipos de Jung</span>
+            <span class="pp-chip">Pirámide de Maslow</span>
+            <span class="pp-chip">Encuesta propia</span>
+          </div>
         </div>
-      </div>
-      <div>
-        <p class="pp-chip-cap">Competencia analizada</p>
-        <div class="pp-chips">
-          <span class="pp-chip pp-chip-alt">Wanda Cosmetics</span>
-          <span class="pp-chip pp-chip-alt">Zaira Beauty</span>
-          <span class="pp-chip pp-chip-alt">Amis</span>
-          <span class="pp-chip pp-chip-alt">Serendipity</span>
+        <div>
+          <p class="pp-chip-cap">Competencia analizada</p>
+          <div class="pp-chips">
+            <span class="pp-chip pp-chip-alt">Wanda Cosmetics</span>
+            <span class="pp-chip pp-chip-alt">Zaira Beauty</span>
+            <span class="pp-chip pp-chip-alt">Amis</span>
+            <span class="pp-chip pp-chip-alt">Serendipity</span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="pp-block">
-    <h2><span>Problema encontrado</span></h2>
-    <div class="pp-stat-row">
-      <p class="pp-stat-num big">80%</p>
-      <p>La marca depende en un 80% del alcance y la credibilidad de una sola persona, Sele Mosca. Es una fortaleza a corto plazo, pero un riesgo estructural, si su reputación se ve afectada, la marca cae con ella. Confirmamos este riesgo con las herramientas empleadas.</p>
-    </div>
-  </div>
-
-  <div class="pp-arrow" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="12" y1="4" x2="12" y2="20"></line>
-      <polyline points="6 14 12 20 18 14"></polyline>
-    </svg>
-  </div>
-
-  <div class="pp-block" style="margin-top:0">
-    <h2><span>Propuesta</span></h2>
-    <p>Con eso armé una propuesta de estrategia de comunicación para construir marca de comunidad, no solo marca de una persona: un mensaje central ("Animate a destacar"), sumar múltiples creadoras que generen contenido (UGC) en lugar de depender de una sola cara. Definí objetivos concretos junto con un índice propio para medir la autonomía de la marca respecto de su fundadora.</p>
-    <div class="pp-stats">
-      <div>
-        <p class="pp-stat-num small">20%</p>
-        <p class="pp-stat-label">más clientes nuevos en 12 meses, con el lanzamiento de dos productos nuevos</p>
+    <div class="pp-block pp-stage" data-step="03">
+      <h2><span>Problema encontrado</span></h2>
+      <div class="pp-stat-row">
+        <p class="pp-stat-num big">80%</p>
+        <p>La marca depende en un 80% del alcance y la credibilidad de una sola persona, Sele Mosca. Es una fortaleza a corto plazo, pero un riesgo estructural, si su reputación se ve afectada, la marca cae con ella. Confirmamos este riesgo con las herramientas empleadas.</p>
       </div>
-      <div>
-        <p class="pp-stat-num small">65%</p>
-        <p class="pp-stat-label">del público asociando la marca con "animarte a destacar" (no solo con Sele Mosca) en 3 meses</p>
+    </div>
+
+    <div class="pp-block pp-stage" data-step="04" style="margin-top:0">
+      <h2><span>Propuesta</span></h2>
+      <p>Con eso armé una propuesta de estrategia de comunicación para construir marca de comunidad, no solo marca de una persona: un mensaje central ("Animate a destacar"), sumar múltiples creadoras que generen contenido (UGC) en lugar de depender de una sola cara. Definí objetivos concretos junto con un índice propio para medir la autonomía de la marca respecto de su fundadora.</p>
+      <div class="pp-stats">
+        <div>
+          <p class="pp-stat-num small">20%</p>
+          <p class="pp-stat-label">más clientes nuevos en 12 meses, con el lanzamiento de dos productos nuevos</p>
+        </div>
+        <div>
+          <p class="pp-stat-num small">65%</p>
+          <p class="pp-stat-label">del público asociando la marca con "animarte a destacar" (no solo con Sele Mosca) en 3 meses</p>
+        </div>
       </div>
     </div>
   </div>
@@ -325,6 +348,75 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
     el.classList.add('pp-r');
     io.observe(el);
   });
+})();
+
+/* Línea de tiempo: el riel va del primer nodo al último, y el relleno crece con
+   el scroll. El punto de lectura es la mitad de la pantalla, no el borde: si
+   fuera el borde de arriba la etapa se prendería antes de que la estés leyendo. */
+(function () {
+  var tl = document.querySelector('.pp-timeline');
+  if (!tl) return;
+  var rail = tl.querySelector('.pp-timeline-rail');
+  var fill = tl.querySelector('.pp-timeline-fill');
+  var stages = [].slice.call(tl.querySelectorAll('.pp-stage'));
+  if (!rail || !fill || !stages.length) return;
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var top = 0, height = 0, marks = [];
+
+  function measure() {
+    var base = tl.getBoundingClientRect().top + window.scrollY;
+    marks = stages.map(function (el) {
+      var st = getComputedStyle(el, '::before');
+      var node = parseFloat(st.height) || 26;
+      var offset = parseFloat(st.top) || 0;
+      return el.getBoundingClientRect().top + window.scrollY + offset + node / 2;
+    });
+    top = marks[0] - base;
+    height = marks[marks.length - 1] - marks[0];
+    rail.style.top = top + 'px';
+    rail.style.height = height + 'px';
+  }
+
+  function update() {
+    if (!height) return;
+    var base = tl.getBoundingClientRect().top + window.scrollY;
+    var lectura = window.scrollY + window.innerHeight * 0.5;
+    var avance = (lectura - (base + top)) / height;
+    avance = Math.min(1, Math.max(0, avance));
+    fill.style.height = (avance * 100) + '%';
+    stages.forEach(function (el, i) {
+      el.classList.toggle('is-on', lectura >= marks[i]);
+    });
+  }
+
+  function refresh() { measure(); update(); }
+
+  if (reduce) {
+    measure();
+    fill.style.height = '100%';
+    stages.forEach(function (el) { el.classList.add('is-on'); });
+    return;
+  }
+
+  /* Un frame por scroll, pero pidiéndolo de nuevo en lugar de saltear: si la
+     pestaña está en segundo plano el navegador congela requestAnimationFrame, y
+     con un "ya pedí uno, no pido más" la bandera quedaba trabada para siempre y
+     la línea no volvía a moverse ni al volver a la pestaña. */
+  var pedido = 0;
+  function onScroll() {
+    if (pedido) cancelAnimationFrame(pedido);
+    pedido = requestAnimationFrame(function () { pedido = 0; update(); });
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', refresh);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) refresh();   // al volver puede haber scrolleado sin que nos enteremos
+  });
+  // las tipografías cambian el alto de los bloques al terminar de cargar
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
+  addEventListener('load', refresh);
+  refresh();
 })();
 </script>
 </body>

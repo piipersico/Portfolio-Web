@@ -514,6 +514,64 @@
     function pause(v) { v.dataset.ppUser = 'paused'; v.pause(); sync(v); }
     function toggle(v) { if (v.paused) play(v); else pause(v); }
 
+    /* --- barra de tiempo ---
+       Propia y no la nativa: la nativa aparece o no según navegador y
+       dispositivo, y en pantalla completa se encimaba con los botones. */
+    function paintSeek(v) {
+      var w = wrapOf(v); if (!w) return;
+      var sk = w.querySelector('.pp-vid-seek'); if (!sk) return;
+      var d = v.duration;
+      var pct = (d && isFinite(d) && d > 0) ? (v.currentTime / d) * 100 : 0;
+      pct = Math.min(100, Math.max(0, pct));
+      var fill = sk.querySelector('.pp-vid-seek-fill');
+      var knob = sk.querySelector('.pp-vid-seek-knob');
+      if (fill) fill.style.width = pct + '%';
+      if (knob) knob.style.left = pct + '%';
+      sk.setAttribute('aria-valuenow', Math.round(pct));
+    }
+
+    function seekToX(v, sk, clientX) {
+      var d = v.duration;
+      if (!d || !isFinite(d) || d <= 0) return;   // sin metadata todavía no hay a dónde ir
+      var r = sk.getBoundingClientRect();
+      if (!r.width) return;
+      var pct = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+      try { v.currentTime = pct * d; } catch (e) { /* no seekable aún */ }
+      paintSeek(v);
+    }
+
+    function wireSeek(v, w) {
+      var sk = w.querySelector('.pp-vid-seek');
+      if (!sk) return;
+      sk.addEventListener('pointerdown', function (e) {
+        e.preventDefault();
+        w.setAttribute('data-seeking', '1');
+        try { sk.setPointerCapture(e.pointerId); } catch (err) {}
+        seekToX(v, sk, e.clientX);
+      });
+      sk.addEventListener('pointermove', function (e) {
+        var held = true;
+        try { held = sk.hasPointerCapture(e.pointerId); } catch (err) {}
+        if (!held) return;
+        seekToX(v, sk, e.clientX);
+      });
+      ['pointerup', 'pointercancel'].forEach(function (ev) {
+        sk.addEventListener(ev, function (e) {
+          w.setAttribute('data-seeking', '0');
+          try { sk.releasePointerCapture(e.pointerId); } catch (err) {}
+        });
+      });
+      sk.addEventListener('keydown', function (e) {
+        var step = e.key === 'ArrowLeft' ? -5 : e.key === 'ArrowRight' ? 5 : 0;
+        if (!step) return;
+        e.preventDefault();
+        var d = v.duration;
+        if (!d || !isFinite(d)) return;
+        v.currentTime = Math.min(d, Math.max(0, v.currentTime + step));
+        paintSeek(v);
+      });
+    }
+
     /* Pantalla completa sobre el contenedor, así los botones siguen encima del
        video. En iPhone no se puede agrandar un div: ahí va el <video> solo, con
        la barra nativa del sistema. */
@@ -548,7 +606,7 @@
         var on = (w === fs);
         w.setAttribute('data-fs', on ? '1' : '0');
         var v = videoOf(w);
-        if (v) v.controls = on || REDUCE;   // en grande sí conviene la barra nativa entera
+        if (v) v.controls = REDUCE;   // los controles son los propios, también en grande
         var b = w.querySelector('.pp-fs');
         if (b) b.setAttribute('aria-label', on ? 'Salir de pantalla completa' : 'Ver en grande');
       });
@@ -601,9 +659,16 @@
         ['play', 'pause', 'ended'].forEach(function (ev) {
           v.addEventListener(ev, function () { sync(v); });
         });
+        ['timeupdate', 'loadedmetadata', 'durationchange', 'seeked'].forEach(function (ev) {
+          v.addEventListener(ev, function () { paintSeek(v); });
+        });
         var w = wrapOf(v);
-        if (w) w.setAttribute('data-playable', '1');   // habilita el click en todo el video
+        if (w) {
+          w.setAttribute('data-playable', '1');   // habilita el click en todo el video
+          wireSeek(v, w);
+        }
         sync(v);
+        paintSeek(v);
         list.push(v);
         loader.observe(v);
         player.observe(v);
@@ -645,6 +710,9 @@
         }
         return;
       }
+
+      // la barra de tiempo y el hueco entre botones no cuentan como click al video
+      if (e.target.closest('.pp-vid-seek') || e.target.closest('.pp-vid-ctrls')) return;
 
       // click en el video mismo: pausa y sigue
       var cw = e.target.closest('.pp-vid');

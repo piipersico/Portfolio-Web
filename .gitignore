@@ -16,3 +16,6 @@ dist/
 
 # config local de herramientas
 .claude/
+
+# masters de video: se encodean a assets/video/, no van al repo
+assets/*.mov
