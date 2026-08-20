@@ -141,6 +141,10 @@ p { font-size: 15.5px; line-height: 1.68; color: var(--mute); margin: 0; }
 .pp-stats > div { background: var(--card); border: 1px solid var(--line);
   border-radius: 20px; padding: clamp(18px,2vw,26px); }
 .pp-stat-label { font-size: 14px; line-height: 1.55; color: var(--mute); margin: 8px 0 0; max-width: 34ch; }
+/* Título de tarjeta, para las islas que agrupan varios ítems en vez de un dato. */
+.pp-card-title { font-family: var(--font-heading); font-weight: 800; font-size: 17px;
+  letter-spacing: -0.01em; color: var(--ink); margin: 0 0 4px; }
+.pp-stats .pp-stat-label { max-width: 52ch; }
 
 .pp-cta-row { margin: clamp(32px,4.5vw,56px) 0 0; padding-top: clamp(28px,4vw,40px);
   border-top: 1px solid var(--line);
@@ -267,17 +271,13 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
 
     <div class="pp-block pp-stage" data-step="01">
       <h2><span>Contexto</span></h2>
-      <p>Elegí Kalis Pizza, una pizzería de Núñez fundada por Franco Kalifón y Martín Calzetti que en menos de un año pasó de abrir sus puertas a entrar en el ranking de las diez mejores pizzerías del mundo de Time Out. Me interesó porque su propuesta es deliberadamente mínima —pizza al estilo neoyorquino, venta por porción, cocina a la vista— y aun así construyó una comunidad que hace fila en la vereda. Es un caso donde el activo principal de la marca no es lo que ofrece, sino lo que decide no ofrecer.</p>
-      <div class="pp-chips">
-        <span class="pp-chip">Top 10 mundial · Time Out</span>
-        <span class="pp-chip pp-chip-alt">Núñez, CABA</span>
-        <span class="pp-chip pp-chip-alt">Abrió en 2025</span>
-      </div>
+      <p>Elegí Kalis Pizza, una pizzería de Buenos Aires que en menos de un año pasó de abrir sus puertas a entrar en el ranking de las diez mejores pizzerías del mundo de Time Out. Me interesó porque su propuesta mínima (pizza al estilo neoyorquino, venta por porción, cocina a la vista) logró construir una comunidad que hace fila en la vereda.</p>
+      <p style="margin-top:16px">El activo principal de la marca no es lo que ofrece, sino lo que decide no ofrecer.</p>
     </div>
 
     <div class="pp-block pp-stage" data-step="02">
       <h2><span>Análisis</span></h2>
-      <p>Analicé la marca y su entorno cruzando herramientas de branding y de planificación estratégica, y mapeé al grupo estratégico completo: las pizzerías premium que compiten por calidad e identidad antes que por precio.</p>
+      <p>Analicé la marca, su competencia y su entorno cruzando herramientas de branding y de planificación estratégica, y mapeé al grupo estratégico completo: las pizzerías premium que compiten por calidad e identidad antes que por precio.</p>
       <div class="pp-chip-groups">
         <div>
           <p class="pp-chip-cap">Herramientas</p>
@@ -292,63 +292,37 @@ footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8p
             <span class="pp-chip">Análisis de tendencias</span>
           </div>
         </div>
-        <div>
-          <p class="pp-chip-cap">Competencia analizada</p>
-          <div class="pp-chips">
-            <span class="pp-chip pp-chip-alt">Ti Amo</span>
-            <span class="pp-chip pp-chip-alt">Atte. Pizzería Napoletana</span>
-            <span class="pp-chip pp-chip-alt">Siamo nel Forno</span>
-            <span class="pp-chip pp-chip-alt">Güerrín</span>
-          </div>
-        </div>
       </div>
-      <p style="margin-top:20px">Del cruce salió una marca con arquetipo de Creador y un costado de Rebelde: toma algo establecido y lo aleja a propósito de las convenciones de la categoría. El territorio donde se para —pizza neoyorquina, panadería artesanal y experiencia callejera premium a la vez— no lo ocupa ningún competidor directo.</p>
-      <blockquote class="pp-quote">
-        <p>“Alta gastronomía urbana, simple y auténtica.”</p>
-        <cite>Esencia de marca — Brand Key</cite>
-      </blockquote>
     </div>
 
     <div class="pp-block pp-stage" data-step="03">
       <h2><span>La oportunidad</span></h2>
-      <p>Kalis vende porciones individuales y solo de noche. Ahí aparece una franja del día y una necesidad que la marca todavía no cubre: algo para compartir, no solo para comer parado. Propuse el sándwich de focaccia, que además no es un invento de marketing: Franco viene de la panadería y ya tiene Kalis Pan. La extensión no hay que hacerla creíble, hay que evidenciarla.</p>
+      <p>Kalis vende porciones individuales y solo de noche. Ahí aparece una franja del día y una necesidad que la marca todavía no cubre: algo para compartir, no solo para comer parado.</p>
+      <p style="margin-top:16px">Propuse el sándwich de focaccia, que además no es un invento de marketing: el dueño viene de la panadería y ya tiene “Kalis Pan”.</p>
       <div class="pp-stats">
         <div>
-          <p class="pp-stat-num small">01</p>
-          <p class="pp-stat-label"><b>Focaccia Kalis.</b> Burrata, jamón crudo, hot honey, pesto y zest de limón. Traslada al formato sándwich el agridulce de la pizza insignia.</p>
-        </div>
-        <div>
-          <p class="pp-stat-num small">02</p>
-          <p class="pp-stat-label"><b>Focaccia Italiana.</b> Mortadela, burrata, pesto de albahaca, pistachos tostados y oliva extra virgen sobre masa de larga fermentación.</p>
-        </div>
-        <div>
-          <p class="pp-stat-num small">03</p>
-          <p class="pp-stat-label"><b>Pepperoni &amp; Honey.</b> Mozzarella, pepperoni artesanal hecho para Kalis, rúcula y hot honey. Intenso, picante y dulce a la vez.</p>
+          <p class="pp-card-title">Tres focaccias nuevas</p>
+          <p class="pp-stat-label"><b>Focaccia Kalis:</b> burrata, jamón crudo, hot honey, pesto y zest de limón.</p>
+          <p class="pp-stat-label"><b>Focaccia Italiana:</b> mortadela, burrata, pesto de albahaca, pistachos tostados y oliva extra virgen.</p>
+          <p class="pp-stat-label"><b>Pepperoni &amp; Honey:</b> mozzarella, pepperoni artesanal, rúcula y hot honey. Intenso, picante y dulce a la vez.</p>
         </div>
       </div>
     </div>
 
     <div class="pp-block pp-stage" data-step="04">
       <h2><span>El problema</span></h2>
-      <div class="pp-stat-row">
-        <p class="pp-stat-num big">4</p>
-        <p>Kalis se construyó sobre la restricción: cuatro sabores, un solo local, sin delivery. Esa austeridad es su punto de credibilidad más fuerte, y también su trampa. Cualquier lanzamiento, por bueno que sea el producto, corre el riesgo de leerse como una movida comercial —como si la marca empezara a expandirse porque sí— y traicionar justamente la lógica que la hizo grande.</p>
-      </div>
+      <p>Kalis se construyó sobre la restricción: cuatro sabores, un solo local, sin delivery. Ese es su punto de credibilidad más fuerte, y también su trampa. Cualquier lanzamiento, por bueno que sea el producto, corre el riesgo de leerse como si la marca empezara a expandirse porque sí, y traicionar justamente la lógica que la hizo grande.</p>
     </div>
 
     <div class="pp-block pp-stage" data-step="05">
       <h2><span>La propuesta</span></h2>
       <p>La solución no fue publicitar el producto, sino transferirle el origen a la comunidad. Si el consumidor siente que la focaccia nace de su propio deseo y no de una decisión de marca, deja de leerse como expansión comercial y pasa a ser una respuesta a una demanda que ya existía. Ese mecanismo es lo que permite lanzar algo nuevo sin romper la restricción. Lo bajé a tres movimientos, en este orden:</p>
       <ol class="pp-steps">
-        <li><b>Ocultar el origen</b>Mostrar el proceso sin explicarlo. La marca sale del rol de vendedora y pasa a ser algo que está pasando y todavía no entendés. La gente pregunta; Kalis no responde. Ese silencio es parte de la campaña.</li>
-        <li><b>Transferir la autoría</b>“Ustedes lo pidieron.” Le devuelve al consumidor el rol que ya quiere tener —el que descubre y comparte— antes de que el producto exista públicamente.</li>
+        <li><b>Ocultar el origen</b>Mostrar el proceso sin explicarlo. La gente pregunta; Kalis no responde. Ese silencio es parte de la campaña.</li>
+        <li><b>Transferir la autoría</b>“Ustedes lo pidieron.” Le devuelve al consumidor el rol que ya quiere tener (el que descubre y comparte).</li>
         <li><b>Convertir la exclusión en el premio</b>Recién acá aparece la focaccia con nombre e imagen. El FOMO necesita una frontera: el miedo no es a perderse el producto, es a perderse el grupo.</li>
       </ol>
-      <blockquote class="pp-quote">
-        <p>“La focaccia de Kalis. Día del Amigo. Para los que ya saben.”</p>
-        <cite>Copy de lanzamiento — 20 de julio</cite>
-      </blockquote>
-      <p style="margin-top:22px">Definí los objetivos y el sistema de medición en tres niveles: eficacia comunicacional (menciones espontáneas y contenido de la comunidad sin pauta), eficiencia estratégica (cobertura ganada y tono percibido) e impacto en negocio (unidades vendidas, ticket promedio y pedidos combinados con slice).</p>
+      <p style="margin-top:22px">Definí los objetivos y creé un sistema de medición.</p>
       <div class="pp-stats">
         <div>
           <p class="pp-stat-num small">+15%</p>
