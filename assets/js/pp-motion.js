@@ -23,6 +23,16 @@
   var REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var COARSE = matchMedia('(pointer: coarse)').matches;
 
+  /* Conexión medida o lenta: dos spots que arrancan solos son decenas de MB que
+     la persona no decidió gastar, y en un plan de datos eso es plata. Cuando el
+     navegador avisa que hay ahorro de datos activado o que la red es 2G/3G, el
+     video no se descarga: queda el poster con la chapa de play y arranca sólo si
+     lo tocan. Lo informa Chrome/Android, que es justo el caso; en iPhone no
+     existe la API y todo sigue como antes. */
+  var CONN = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  var AHORRO = !!CONN && (CONN.saveData === true ||
+    ['slow-2g', '2g', '3g'].indexOf(CONN.effectiveType) !== -1);
+
   var INK = [32, 30, 29];
   var MAG = [195, 0, 122];
 
@@ -506,11 +516,19 @@
       if (b) b.setAttribute('aria-label', v.paused ? 'Reproducir' : 'Pausar');
     }
 
+    // el src se asigna lo más tarde posible: sin src el navegador no baja nada
+    function ensureSrc(v) {
+      if (!v.getAttribute('src') && v.dataset.src) {
+        v.setAttribute('src', v.dataset.src);
+        v.load();
+      }
+    }
+
     function rawPlay(v) {
       var pr = v.play();
       if (pr && pr.catch) pr.catch(function () { /* autoplay bloqueado: queda el poster */ });
     }
-    function play(v) { delete v.dataset.ppUser; rawPlay(v); sync(v); }
+    function play(v) { delete v.dataset.ppUser; ensureSrc(v); rawPlay(v); sync(v); }
     function pause(v) { v.dataset.ppUser = 'paused'; v.pause(); sync(v); }
     function toggle(v) { if (v.paused) play(v); else pause(v); }
 
@@ -585,6 +603,7 @@
     function toggleFs(w) {
       var v = videoOf(w);
       if (!v) return;
+      ensureSrc(v);   // agrandar es querer verlo, aunque no lo hayan puesto en play
       if (fsNow()) {
         if (document.exitFullscreen) document.exitFullscreen();
         else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
@@ -618,12 +637,8 @@
     var loader = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (!en.isIntersecting) return;
-        var v = en.target;
-        if (!v.getAttribute('src') && v.dataset.src) {
-          v.setAttribute('src', v.dataset.src);
-          v.load();
-        }
-        loader.unobserve(v);
+        ensureSrc(en.target);
+        loader.unobserve(en.target);
       });
     }, { rootMargin: '400px 0px' });
 
@@ -667,10 +682,15 @@
           w.setAttribute('data-playable', '1');   // habilita el click en todo el video
           wireSeek(v, w);
         }
+        if (AHORRO) {
+          // se marca como pausado por la persona: ni el scroll ni nada lo arranca
+          v.dataset.ppUser = 'paused';
+          if (w) w.setAttribute('data-saver', '1');
+        }
         sync(v);
         paintSeek(v);
         list.push(v);
-        loader.observe(v);
+        if (!AHORRO) loader.observe(v);   // con ahorro, el src espera al play
         player.observe(v);
       });
     }
