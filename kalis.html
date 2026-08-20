@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nueva unidad de negocio — KALIS PIZZA | Pilar Pérsico</title>
+<meta name="description" content="Análisis estratégico de Kalis Pizza y propuesta de lanzamiento del sándwich de focaccia como nueva unidad de negocio. Caso de Pilar Pérsico.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,700;12..96,75..100,800&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,600;1,6..12,400&display=swap">
+<script src="./assets/js/pp-motion.js?v=6"></script>
+<style>
+:root {
+  --ink:#201e1d; --mag:#c3007a; --mag-soft:#fdeaf4; --paper:#fbf9f7; --card:#ffffff;
+  --line:#ece6e2;
+  --mute:#6f6a68; --r:28px; --edge:clamp(20px,5vw,64px);
+  --sel-bg:rgba(195,0,122,.10); --sel-handle:rgba(195,0,122,.42);
+  --node:26px; --rail-pad:40px; --node-top:3px;   /* riel de la línea de tiempo */
+  --shell:1160px;           /* el mismo ancho que el home */
+  --label:250px;            /* columna de los títulos de sección */
+  --font-heading:'Bricolage Grotesque','Nunito Sans',system-ui,sans-serif;
+  --font-body:'Nunito Sans',system-ui,sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; background: var(--paper); }
+body { margin: 0; background: transparent; color: var(--ink); font-family: var(--font-body);
+  font-size: 16px; line-height: 1.5; text-wrap: pretty; -webkit-font-smoothing: antialiased; }
+a { color: var(--ink); text-decoration: none; }
+a:hover { color: var(--mag); }
+:focus-visible { outline: 2px solid var(--mag); outline-offset: 3px; border-radius: 8px; }
+
+/* ============ FONDO VIVO ============
+   Lo arma pp-motion.js igual que en el home: un canvas de manchas de color que
+   se mueven solas, otro de formas (asteriscos, estrellas, halftone) con
+   parallax de mouse y scroll, y el grano de papel arriba de todo. */
+#pp-bg { position: fixed; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
+#pp-bg canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#pp-bg .pp-blobs { filter: blur(44px) saturate(118%); transform: scale(1.16); opacity: .95; }
+#pp-spot { position: absolute; inset: -25%;
+  background: radial-gradient(460px circle at var(--mx,50%) var(--my,38%), rgba(195,0,122,.13), rgba(195,0,122,0) 64%); }
+#pp-grain { position: fixed; inset: -140px; z-index: -1; pointer-events: none; opacity: .05; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: pp-grain 1.05s steps(3) infinite; }
+@keyframes pp-grain {
+  0%   { transform: translate3d(0,0,0); }
+  33%  { transform: translate3d(-9px,6px,0); }
+  66%  { transform: translate3d(7px,-8px,0); }
+  100% { transform: translate3d(0,0,0); }
+}
+
+/* barra de arriba: en una página larga tiene que haber salida siempre a mano */
+.pp-head { position: sticky; top: 0; z-index: 30; background: rgba(251,249,247,.72);
+  backdrop-filter: blur(14px) saturate(130%); border-bottom: 1px solid transparent;
+  transition: background .3s ease, border-color .3s ease, box-shadow .3s ease; }
+html[data-pp-scroll="1"] .pp-head { background: rgba(251,249,247,.92); border-bottom-color: var(--line);
+  box-shadow: 0 10px 30px -22px rgba(32,30,29,.55); }
+.pp-head-in { max-width: var(--shell); margin: 0 auto; padding: 14px var(--edge);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.pp-head-tag { font-size: 12.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--mute); }
+@media (max-width: 520px) { .pp-head-tag { display: none; } }
+
+.pp-wrap { max-width: var(--shell); margin: 0 auto;
+  padding: clamp(20px,4vw,52px) var(--edge) clamp(48px,6vw,80px); }
+.pp-back { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600;
+  color: var(--mute); text-decoration: none; }
+.pp-back:hover { color: var(--mag); }
+.pp-back svg { transition: transform .2s ease; }
+.pp-back:hover svg { transform: translateX(-3px); }
+
+/* ---------- HERO: título a la izquierda, foto a la derecha ---------- */
+.pp-hero { display: grid; gap: clamp(24px,3vw,32px); }
+.pp-eyebrow { font-size: 12.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--mag); margin: 0 0 12px; }
+h1 { font-family: var(--font-heading); font-weight: 800; font-size: clamp(30px,5vw,54px);
+  line-height: 1.04; letter-spacing: -0.015em; margin: 0; text-wrap: balance; }
+.pp-lede { font-size: clamp(16px,1.5vw,18px); line-height: 1.6; color: var(--mute);
+  margin: 16px 0 0; max-width: 46ch; }
+
+h2 { font-family: var(--font-heading); font-weight: 800; font-size: 15px; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--ink); margin: 0 0 10px; }
+
+/* Zócalo de los subtítulos: el resaltado de selección de iOS pero en rosa, con
+   sus dos manijas. El texto va en un <span> porque el h2 es hijo directo del
+   grid y ahí un inline-block se blockifica: se estiraría a toda la columna en
+   vez de abrazar la palabra. Las manijas son los ::before/::after, cada una
+   dibujada con dos capas de background (el puntito y la barra). */
+h2 span { position: relative; display: inline-block;
+  background: var(--sel-bg); border-radius: 3px; padding: 4px 8px; }
+h2 span::before, h2 span::after { content: ''; position: absolute; width: 12px;
+  pointer-events: none; background-repeat: no-repeat;
+  background-image:
+    radial-gradient(circle at 6px 6px, var(--sel-handle) 5.2px, transparent 5.6px),
+    linear-gradient(var(--sel-handle), var(--sel-handle)); }
+/* la de arranque: puntito arriba y barra que baja */
+h2 span::before { left: -6px; top: -11px; bottom: 0;
+  background-size: 12px 12px, 2.5px calc(100% - 6px);
+  background-position: 0 0, 4.75px 6px; }
+/* la de cierre: barra que baja y puntito abajo */
+h2 span::after { right: -6px; top: 0; bottom: -11px;
+  background-size: 12px 12px, 2.5px calc(100% - 6px);
+  background-position: 0 100%, 4.75px 0; }
+p { font-size: 15.5px; line-height: 1.68; color: var(--mute); margin: 0; }
+
+/* imagen: si el archivo no está, el bloque entero desaparece (nada de cajas vacías) */
+.pp-fig { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: var(--r);
+  overflow: hidden; background: var(--mag-soft); margin: 0;
+  border: 1px solid rgba(32,30,29,.06); box-shadow: 0 24px 50px -34px rgba(32,30,29,.5); }
+.pp-fig img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pp-fig[hidden] { display: none; }
+/* El hero recorta a 3:2. La foto original es casi cuadrada (1034x862): a 3:2
+   queda horizontal sin comerse ni el celular de arriba ni los productos de
+   abajo, que es lo que pasaba a 16:9. */
+.pp-fig-hero { aspect-ratio: 3 / 2; }
+.pp-fig-wide { margin: clamp(32px,4.5vw,48px) 0 0; aspect-ratio: 21 / 9; }
+
+/* ---------- SECCIONES: rótulo a la izquierda, contenido a la derecha ---------- */
+.pp-block { margin: clamp(30px,4.5vw,52px) 0 0; }
+.pp-chip { display: inline-block; background: var(--mag-soft); color: var(--mag);
+  border: 1px solid rgba(195,0,122,.16); border-radius: 999px; padding: 6px 14px;
+  font-size: 13px; font-weight: 600; }
+.pp-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+/* Dos grupos: con qué lo analicé y contra quién lo comparé. Los competidores
+   van en gris para que no compitan visualmente con las herramientas. */
+.pp-chip-groups { display: grid; gap: clamp(18px,2vw,24px); margin-top: 18px; }
+.pp-chip-groups .pp-chips { margin-top: 0; }
+.pp-chip-cap { font-size: 12px; font-weight: 600; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--mute); margin: 0 0 10px; }
+.pp-chip-alt { background: var(--card); color: var(--mute); border-color: var(--line); }
+
+/* dato + explicación */
+.pp-stat-row { display: grid; grid-template-columns: auto minmax(0,1fr);
+  align-items: start; gap: 10px 28px; }
+.pp-stat-num { font-family: var(--font-heading); font-weight: 800; color: var(--mag);
+  margin: 0; line-height: 1; }
+.pp-stat-num.big { font-size: clamp(48px,6.5vw,76px); letter-spacing: -0.02em; }
+.pp-stat-num.small { font-size: clamp(32px,3.4vw,44px); letter-spacing: -0.02em; }
+@media (max-width: 640px) { .pp-stat-row { grid-template-columns: 1fr; gap: 8px; } }
+
+.pp-stats { display: grid; grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+  gap: clamp(14px,1.6vw,20px); margin-top: 24px; }
+.pp-stats > div { background: var(--card); border: 1px solid var(--line);
+  border-radius: 20px; padding: clamp(18px,2vw,26px); }
+.pp-stat-label { font-size: 14px; line-height: 1.55; color: var(--mute); margin: 8px 0 0; max-width: 34ch; }
+
+.pp-cta-row { margin: clamp(32px,4.5vw,56px) 0 0; padding-top: clamp(28px,4vw,40px);
+  border-top: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; }
+.pp-cta { display: inline-flex; align-items: center; gap: 6px; background: var(--mag); color: #fff;
+  border-radius: 999px; padding: 15px 26px; font-size: 15px; font-weight: 600; text-decoration: none;
+  box-shadow: 0 10px 22px -10px rgba(195,0,122,.75); transition: transform .22s ease, box-shadow .22s ease; }
+.pp-cta:hover { color: #fff; transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 16px 30px -12px rgba(195,0,122,.85); }
+@media (max-width: 520px) { .pp-cta { width: 100%; justify-content: center; } }
+
+footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px;
+  margin-top: clamp(28px,4vw,44px); padding-top: clamp(20px,3vw,28px); border-top: 1px solid var(--line);
+  font-size: 13.5px; color: var(--mute); }
+
+/* Cita destacada: la frase que resume la etapa, con la barra magenta al costado. */
+.pp-quote { margin: 22px 0 0; padding: 2px 0 2px 20px; border-left: 3px solid var(--mag); }
+.pp-quote p { font-family: var(--font-heading); font-weight: 400; font-size: clamp(17px,1.7vw,20px);
+  line-height: 1.45; color: var(--ink); font-style: italic; }
+.pp-quote cite { display: block; margin-top: 8px; font-size: 13px; font-style: normal;
+  font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--mute); }
+
+/* Los tres movimientos de la campaña: numerados, porque el orden es el mecanismo. */
+.pp-steps { list-style: none; counter-reset: paso; margin: 22px 0 0; padding: 0;
+  display: grid; gap: 14px; }
+.pp-steps li { counter-increment: paso; position: relative; padding-left: 44px; }
+.pp-steps li::before { content: counter(paso); position: absolute; left: 0; top: 0;
+  width: 30px; height: 30px; border-radius: 999px; display: grid; place-items: center;
+  font-family: var(--font-heading); font-weight: 800; font-size: 13px;
+  background: var(--mag-soft); color: var(--mag); border: 1.5px solid rgba(195,0,122,.2); }
+.pp-steps b { display: block; font-family: var(--font-heading); font-weight: 800;
+  font-size: 15px; color: var(--ink); margin-bottom: 3px; }
+
+/* ---------- LÍNEA DE TIEMPO ----------
+   Las cuatro etapas cuelgan de un riel vertical. El riel apagado es la ruta
+   completa; encima va un relleno magenta cuya altura la maneja el scroll, así
+   se ve cuánto del caso llevás leído. Cada nodo se prende cuando el punto de
+   lectura (la mitad de la pantalla) lo pasa. */
+.pp-timeline { position: relative; padding-left: var(--rail-pad); }
+.pp-timeline-rail { position: absolute; left: calc(var(--node) / 2 - 1px); width: 2px;
+  background: var(--line); border-radius: 2px; pointer-events: none; }
+.pp-timeline-fill { position: absolute; left: 0; top: 0; width: 100%; height: 0;
+  background: linear-gradient(var(--mag), var(--mag)); border-radius: 2px;
+  transition: height .18s linear; }
+
+.pp-stage { position: relative; }
+.pp-stage::before { content: attr(data-step);
+  position: absolute; left: calc(var(--rail-pad) * -1); top: var(--node-top);
+  width: var(--node); height: var(--node); border-radius: 999px;
+  display: grid; place-items: center;
+  font-family: var(--font-heading); font-weight: 800; font-size: 11px; letter-spacing: .02em;
+  background: var(--paper); color: var(--mute);
+  border: 2px solid var(--line); box-shadow: 0 0 0 5px var(--paper);
+  transition: background .35s ease, color .35s ease, border-color .35s ease, transform .35s cubic-bezier(.25,.8,.35,1); }
+.pp-stage.is-on::before { background: var(--mag); color: #fff; border-color: var(--mag);
+  transform: scale(1.06); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pp-timeline-fill { transition: none; }
+  .pp-stage::before { transition: none; }
+}
+
+/* ---------- DE 900px PARA ARRIBA: se abre a dos columnas ----------
+   El rótulo se va al margen izquierdo y el texto ocupa una columna medida
+   (72ch), pegada al borde derecho. Así la página usa todo el ancho sin que
+   los párrafos queden en renglones imposibles de leer. */
+@media (min-width: 900px) {
+  :root { --node:30px; --rail-pad:62px; --node-top:5px; }
+
+  .pp-hero { grid-template-columns: minmax(0,1fr) minmax(0,520px);
+    align-items: center; gap: clamp(32px,4vw,64px); }
+
+  /* con más ancho el cuerpo pide más cuerpo: 17px lee mejor y llena la columna */
+  p { font-size: 17px; line-height: 1.7; }
+  .pp-stat-label { font-size: 14.5px; line-height: 1.6; }
+
+  .pp-block { display: grid; grid-template-columns: var(--label) minmax(0,72ch);
+    justify-content: space-between; align-items: start; column-gap: clamp(24px,4vw,64px); }
+  .pp-block > h2 { grid-column: 1; margin: 0; padding-top: 5px; }
+  .pp-block > *:not(h2) { grid-column: 2; }
+
+}
+
+/* aparición al scrollear, igual que en el home */
+.pp-r { opacity: 0; transform: translateY(8px); }
+.pp-r.pp-in { opacity: 1; transform: none; transition: opacity .5s ease, transform .5s cubic-bezier(.25,.8,.35,1); }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  #pp-grain { animation: none; }
+  .pp-r, .pp-r.pp-in { opacity: 1; transform: none; transition: none; }
+}
+</style>
+</head>
+<body data-pp-no-type>
+
+<header class="pp-head">
+  <div class="pp-head-in">
+    <a class="pp-back" href="index.html#trabajos">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Volver al portfolio
+    </a>
+    <span class="pp-head-tag">Caso · Kalis Pizza</span>
+  </div>
+</header>
+
+<div class="pp-wrap">
+  <div class="pp-hero">
+    <div>
+      <p class="pp-eyebrow">Estrategia de lanzamiento</p>
+      <h1>Nueva unidad de negocio — KALIS PIZZA</h1>
+      <p class="pp-lede">Una marca que se hizo grande siendo chica. Cómo lanzarle un producto nuevo sin romper la restricción que la volvió famosa.</p>
+    </div>
+
+    <!-- FOTO DESTACADA: assets/kalis-hero.jpg. Si la cambiás, actualizá el src.
+         Si el archivo no está, el bloque no se muestra. -->
+    <figure class="pp-fig pp-fig-hero">
+      <img src="assets/kalis-hero.jpg" alt="Tres personas comiendo porciones de Kalis Pizza, con el logo de la marca" loading="eager"
+        onerror="this.closest('.pp-fig').hidden = true">
+    </figure>
+  </div>
+
+  <div class="pp-timeline">
+    <div class="pp-timeline-rail" aria-hidden="true"><div class="pp-timeline-fill"></div></div>
+
+    <div class="pp-block pp-stage" data-step="01">
+      <h2><span>Contexto</span></h2>
+      <p>Elegí Kalis Pizza, una pizzería de Núñez fundada por Franco Kalifón y Martín Calzetti que en menos de un año pasó de abrir sus puertas a entrar en el ranking de las diez mejores pizzerías del mundo de Time Out. Me interesó porque su propuesta es deliberadamente mínima —pizza al estilo neoyorquino, venta por porción, cocina a la vista— y aun así construyó una comunidad que hace fila en la vereda. Es un caso donde el activo principal de la marca no es lo que ofrece, sino lo que decide no ofrecer.</p>
+      <div class="pp-chips">
+        <span class="pp-chip">Top 10 mundial · Time Out</span>
+        <span class="pp-chip pp-chip-alt">Núñez, CABA</span>
+        <span class="pp-chip pp-chip-alt">Abrió en 2025</span>
+      </div>
+    </div>
+
+    <div class="pp-block pp-stage" data-step="02">
+      <h2><span>Análisis</span></h2>
+      <p>Analicé la marca y su entorno cruzando herramientas de branding y de planificación estratégica, y mapeé al grupo estratégico completo: las pizzerías premium que compiten por calidad e identidad antes que por precio.</p>
+      <div class="pp-chip-groups">
+        <div>
+          <p class="pp-chip-cap">Herramientas</p>
+          <div class="pp-chips">
+            <span class="pp-chip">Brand Key</span>
+            <span class="pp-chip">Pirámide de Kapferer</span>
+            <span class="pp-chip">FODA</span>
+            <span class="pp-chip">PESTEL</span>
+            <span class="pp-chip">Mapa de Kotler</span>
+            <span class="pp-chip">Arquetipos de Jung</span>
+            <span class="pp-chip">Laddering de beneficios</span>
+            <span class="pp-chip">Análisis de tendencias</span>
+          </div>
+        </div>
+        <div>
+          <p class="pp-chip-cap">Competencia analizada</p>
+          <div class="pp-chips">
+            <span class="pp-chip pp-chip-alt">Ti Amo</span>
+            <span class="pp-chip pp-chip-alt">Atte. Pizzería Napoletana</span>
+            <span class="pp-chip pp-chip-alt">Siamo nel Forno</span>
+            <span class="pp-chip pp-chip-alt">Güerrín</span>
+          </div>
+        </div>
+      </div>
+      <p style="margin-top:20px">Del cruce salió una marca con arquetipo de Creador y un costado de Rebelde: toma algo establecido y lo aleja a propósito de las convenciones de la categoría. El territorio donde se para —pizza neoyorquina, panadería artesanal y experiencia callejera premium a la vez— no lo ocupa ningún competidor directo.</p>
+      <blockquote class="pp-quote">
+        <p>“Alta gastronomía urbana, simple y auténtica.”</p>
+        <cite>Esencia de marca — Brand Key</cite>
+      </blockquote>
+    </div>
+
+    <div class="pp-block pp-stage" data-step="03">
+      <h2><span>La oportunidad</span></h2>
+      <p>Kalis vende porciones individuales y solo de noche. Ahí aparece una franja del día y una necesidad que la marca todavía no cubre: algo para compartir, no solo para comer parado. Propuse el sándwich de focaccia, que además no es un invento de marketing: Franco viene de la panadería y ya tiene Kalis Pan. La extensión no hay que hacerla creíble, hay que evidenciarla.</p>
+      <div class="pp-stats">
+        <div>
+          <p class="pp-stat-num small">01</p>
+          <p class="pp-stat-label"><b>Focaccia Kalis.</b> Burrata, jamón crudo, hot honey, pesto y zest de limón. Traslada al formato sándwich el agridulce de la pizza insignia.</p>
+        </div>
+        <div>
+          <p class="pp-stat-num small">02</p>
+          <p class="pp-stat-label"><b>Focaccia Italiana.</b> Mortadela, burrata, pesto de albahaca, pistachos tostados y oliva extra virgen sobre masa de larga fermentación.</p>
+        </div>
+        <div>
+          <p class="pp-stat-num small">03</p>
+          <p class="pp-stat-label"><b>Pepperoni &amp; Honey.</b> Mozzarella, pepperoni artesanal hecho para Kalis, rúcula y hot honey. Intenso, picante y dulce a la vez.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pp-block pp-stage" data-step="04">
+      <h2><span>El problema</span></h2>
+      <div class="pp-stat-row">
+        <p class="pp-stat-num big">4</p>
+        <p>Kalis se construyó sobre la restricción: cuatro sabores, un solo local, sin delivery. Esa austeridad es su punto de credibilidad más fuerte, y también su trampa. Cualquier lanzamiento, por bueno que sea el producto, corre el riesgo de leerse como una movida comercial —como si la marca empezara a expandirse porque sí— y traicionar justamente la lógica que la hizo grande.</p>
+      </div>
+    </div>
+
+    <div class="pp-block pp-stage" data-step="05">
+      <h2><span>La propuesta</span></h2>
+      <p>La solución no fue publicitar el producto, sino transferirle el origen a la comunidad. Si el consumidor siente que la focaccia nace de su propio deseo y no de una decisión de marca, deja de leerse como expansión comercial y pasa a ser una respuesta a una demanda que ya existía. Ese mecanismo es lo que permite lanzar algo nuevo sin romper la restricción. Lo bajé a tres movimientos, en este orden:</p>
+      <ol class="pp-steps">
+        <li><b>Ocultar el origen</b>Mostrar el proceso sin explicarlo. La marca sale del rol de vendedora y pasa a ser algo que está pasando y todavía no entendés. La gente pregunta; Kalis no responde. Ese silencio es parte de la campaña.</li>
+        <li><b>Transferir la autoría</b>“Ustedes lo pidieron.” Le devuelve al consumidor el rol que ya quiere tener —el que descubre y comparte— antes de que el producto exista públicamente.</li>
+        <li><b>Convertir la exclusión en el premio</b>Recién acá aparece la focaccia con nombre e imagen. El FOMO necesita una frontera: el miedo no es a perderse el producto, es a perderse el grupo.</li>
+      </ol>
+      <blockquote class="pp-quote">
+        <p>“La focaccia de Kalis. Día del Amigo. Para los que ya saben.”</p>
+        <cite>Copy de lanzamiento — 20 de julio</cite>
+      </blockquote>
+      <p style="margin-top:22px">Definí los objetivos y el sistema de medición en tres niveles: eficacia comunicacional (menciones espontáneas y contenido de la comunidad sin pauta), eficiencia estratégica (cobertura ganada y tono percibido) e impacto en negocio (unidades vendidas, ticket promedio y pedidos combinados con slice).</p>
+      <div class="pp-stats">
+        <div>
+          <p class="pp-stat-num small">+15%</p>
+          <p class="pp-stat-label">en ventas totales a 7 meses, con la focaccia como nueva unidad de negocio</p>
+        </div>
+        <div>
+          <p class="pp-stat-num small">70%</p>
+          <p class="pp-stat-label">del target informado del lanzamiento y su diferencial en 2 meses</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOTO DE CIERRE (opcional): dejá el archivo en assets/kalis-cierre.jpg y aparece sola,
+       a todo el ancho de la página. Mientras no esté, este bloque no se muestra. -->
+  <figure class="pp-fig pp-fig-wide" style="background:#f1efec" hidden>
+    <img src="assets/kalis-cierre.jpg" alt="Kalis Pizza" loading="lazy"
+      onerror="this.closest('.pp-fig').hidden = true"
+      onload="this.closest('.pp-fig').hidden = false">
+  </figure>
+
+  <div class="pp-cta-row">
+    <a class="pp-cta" href="https://wa.me/5491127406600?text=Hola%20Pili%2C%20vi%20tu%20portfolio%20y%20quiero%20consultar%20por%20tus%20servicios%20de%20" target="_blank" rel="noopener">Escribime por WhatsApp →</a>
+    <a class="pp-back" href="index.html#trabajos">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      Volver al portfolio
+    </a>
+  </div>
+
+  <footer>
+    <span>Pilar Pérsico — 2026</span>
+    <span>Licenciatura en Publicidad, UADE</span>
+  </footer>
+</div>
+
+<script>
+/* pp-motion.js ya se encarga del fondo, del estado de scroll del header y de
+   revelar <section> y <footer>. Acá sólo faltan los bloques de esta página, que
+   son divs. El hero queda afuera a propósito: es lo primero que se ve, no tiene
+   que aparecer con delay. */
+(function () {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      en.target.classList.add('pp-in');
+      io.unobserve(en.target);
+    });
+  }, { rootMargin: '0px 0px -6% 0px', threshold: 0.05 });
+  document.querySelectorAll('.pp-block, .pp-cta-row').forEach(function (el) {
+    el.classList.add('pp-r');
+    io.observe(el);
+  });
+})();
+
+/* Línea de tiempo: el riel va del primer nodo al último, y el relleno crece con
+   el scroll. El punto de lectura es la mitad de la pantalla, no el borde: si
+   fuera el borde de arriba la etapa se prendería antes de que la estés leyendo. */
+(function () {
+  var tl = document.querySelector('.pp-timeline');
+  if (!tl) return;
+  var rail = tl.querySelector('.pp-timeline-rail');
+  var fill = tl.querySelector('.pp-timeline-fill');
+  var stages = [].slice.call(tl.querySelectorAll('.pp-stage'));
+  if (!rail || !fill || !stages.length) return;
+
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var top = 0, height = 0, marks = [];
+
+  function measure() {
+    var base = tl.getBoundingClientRect().top + window.scrollY;
+    marks = stages.map(function (el) {
+      var st = getComputedStyle(el, '::before');
+      var node = parseFloat(st.height) || 26;
+      var offset = parseFloat(st.top) || 0;
+      return el.getBoundingClientRect().top + window.scrollY + offset + node / 2;
+    });
+    top = marks[0] - base;
+    height = marks[marks.length - 1] - marks[0];
+    rail.style.top = top + 'px';
+    rail.style.height = height + 'px';
+  }
+
+  function update() {
+    if (!height) return;
+    var base = tl.getBoundingClientRect().top + window.scrollY;
+    var lectura = window.scrollY + window.innerHeight * 0.5;
+    var avance = (lectura - (base + top)) / height;
+    avance = Math.min(1, Math.max(0, avance));
+    fill.style.height = (avance * 100) + '%';
+    stages.forEach(function (el, i) {
+      el.classList.toggle('is-on', lectura >= marks[i]);
+    });
+  }
+
+  function refresh() { measure(); update(); }
+
+  if (reduce) {
+    measure();
+    fill.style.height = '100%';
+    stages.forEach(function (el) { el.classList.add('is-on'); });
+    return;
+  }
+
+  /* Un frame por scroll, pero pidiéndolo de nuevo en lugar de saltear: si la
+     pestaña está en segundo plano el navegador congela requestAnimationFrame, y
+     con un "ya pedí uno, no pido más" la bandera quedaba trabada para siempre y
+     la línea no volvía a moverse ni al volver a la pestaña. */
+  var pedido = 0;
+  function onScroll() {
+    if (pedido) cancelAnimationFrame(pedido);
+    pedido = requestAnimationFrame(function () { pedido = 0; update(); });
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', refresh);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) refresh();   // al volver puede haber scrolleado sin que nos enteremos
+  });
+  // las tipografías cambian el alto de los bloques al terminar de cargar
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refresh);
+  addEventListener('load', refresh);
+  refresh();
+})();
+</script>
+</body>
+</html>

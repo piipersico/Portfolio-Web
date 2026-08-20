@@ -364,10 +364,23 @@ a.pp-vid:hover .pp-case-img, a.pp-vid:focus-visible .pp-case-img { transform: sc
 .pp-sobre-txt > p:first-child { margin-top: 0; }
 
 /* link secundario de las cards de Trabajos (menos peso visual que el pp-cta) */
-.pp-case-link { color: var(--mute); }
-.pp-case-link:hover { color: var(--mag); }
+/* "Ver caso completo": era texto suelto en gris y no se leía como algo que se
+   toca. Ahora es una pastilla de contorno: se ve que es un botón, pero sin
+   pelearle al CTA de WhatsApp, que es el que manda. Por eso contorno en vez de
+   relleno, y un escalón menos de tipografía y de aire. Al pasar por encima sí
+   se llena, que es cuando ya no compite con nada. */
+.pp-case-link { display: inline-flex; align-items: center; gap: 7px;
+  margin-top: 14px; padding: 10px 18px; border-radius: 999px;
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  color: var(--mag); background: var(--mag-soft);
+  border: 1.5px solid rgba(195,0,122,.28);
+  transition: background .22s ease, border-color .22s ease, color .22s ease,
+              transform .22s ease, box-shadow .22s ease; }
+.pp-case-link:hover, .pp-case-link:focus-visible { color: #fff;
+  background: var(--mag); border-color: var(--mag); transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(195,0,122,.8); }
 .pp-case-link svg { transition: transform .2s ease; }
-.pp-case-link:hover svg { transform: translateX(2px); }
+.pp-case-link:hover svg { transform: translateX(3px); }
 
 /* aparición al scrollear */
 .pp-r { opacity: 0; transform: translateY(8px); }
@@ -570,7 +583,7 @@ a.pp-vid:hover .pp-case-img, a.pp-vid:focus-visible .pp-case-img { transform: sc
             </div>
             <p class="pp-vid-missing">Falta <b>assets/video/pilchera.mp4</b><span>Dejá el archivo ahí (y si querés pilchera-poster.jpg) y aparece solo</span></p>
           </div>
-          <h3 style="font-family:var(--font-heading);font-weight:800;font-size:19px;letter-spacing:-0.01em;margin:18px 0 0"><a href="#contacto" style="color:var(--mag)">Pilchera →</a></h3>
+          <h3 style="font-family:var(--font-heading);font-weight:800;font-size:19px;letter-spacing:-0.01em;margin:18px 0 0"><a href="#contacto" style="color:var(--mag)">Pilchera</a></h3>
           <p style="font-size:15px;line-height:1.6;color:var(--mute);margin:6px 0 0;max-width:46ch">Spot audiovisual para una marca de asesoramiento de imagen. Actuación, dirección, producción, creatividad y edición.</p>
         </article>
         <article>
@@ -624,7 +637,7 @@ a.pp-vid:hover .pp-case-img, a.pp-vid:focus-visible .pp-case-img { transform: sc
             </div>
             <p class="pp-vid-missing">Falta <b>assets/video/mercado-libre.mp4</b><span>Dejá el archivo ahí (y si querés mercado-libre-poster.jpg) y aparece solo</span></p>
           </div>
-          <h3 style="font-family:var(--font-heading);font-weight:800;font-size:19px;letter-spacing:-0.01em;margin:18px 0 0"><a href="#contacto" style="color:var(--mag)">Mercado Libre →</a></h3>
+          <h3 style="font-family:var(--font-heading);font-weight:800;font-size:19px;letter-spacing:-0.01em;margin:18px 0 0"><a href="#contacto" style="color:var(--mag)">Mercado Libre</a></h3>
           <p style="font-size:15px;line-height:1.6;color:var(--mute);margin:6px 0 0;max-width:46ch">Spot audiovisual académico. Dirección, producción, creatividad, iluminación y edición.</p>
         </article>
         <article>
@@ -633,9 +646,22 @@ a.pp-vid:hover .pp-case-img, a.pp-vid:focus-visible .pp-case-img { transform: sc
             <img class="pp-case-img" src="assets/SeleMosca.jpg" alt="Sele Mosca, fundadora de Mosquiano" loading="lazy" onerror="this.closest('.pp-vid').setAttribute('data-missing','1')" onload="this.closest('.pp-vid').setAttribute('data-missing','0')">
             <p class="pp-vid-missing">Falta <b>assets/SeleMosca.jpg</b><span>Dejá ahí la foto destacada de Mosquiano y aparece sola</span></p>
           </a>
-          <h3 style="font-family:var(--font-heading);font-weight:800;font-size:19px;letter-spacing:-0.01em;margin:18px 0 0"><a href="mosquiano.html" style="color:var(--mag)">Mosquiano →</a></h3>
+          <h3 style="font-family:var(--font-heading);font-weight:800;font-size:19px;letter-spacing:-0.01em;margin:18px 0 0"><a href="mosquiano.html" style="color:var(--mag)">Mosquiano</a></h3>
           <p style="font-size:15px;line-height:1.6;color:var(--mute);margin:6px 0 0;max-width:46ch">Auditoría y propuesta de marca</p>
-          <a href="mosquiano.html" class="pp-case-link" style="display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-size:13.5px;font-weight:600;text-decoration:none">
+          <a href="mosquiano.html" class="pp-case-link">
+            Ver caso completo
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </article>
+        <article>
+          <!-- FOTO DE KALIS: el archivo es assets/kalis-cover.jpg -->
+          <a href="kalis.html" class="pp-vid" data-missing="0" style="display:block;position:relative;width:100%;aspect-ratio:16 / 9;border-radius:var(--r);overflow:hidden;background:var(--mag-soft)" aria-label="Ver el caso completo de Kalis Pizza">
+            <img class="pp-case-img" src="assets/kalis-cover.jpg" alt="Porción de pizza de Kalis sostenida frente al horno" loading="lazy" onerror="this.closest('.pp-vid').setAttribute('data-missing','1')" onload="this.closest('.pp-vid').setAttribute('data-missing','0')">
+            <p class="pp-vid-missing">Falta <b>assets/kalis-cover.jpg</b><span>Dejá ahí la foto destacada de Kalis y aparece sola</span></p>
+          </a>
+          <h3 style="font-family:var(--font-heading);font-weight:800;font-size:19px;letter-spacing:-0.01em;margin:18px 0 0"><a href="kalis.html" style="color:var(--mag)">Kalis Pizza</a></h3>
+          <p style="font-size:15px;line-height:1.6;color:var(--mute);margin:6px 0 0;max-width:46ch">Estrategia de lanzamiento de una nueva unidad de negocio</p>
+          <a href="kalis.html" class="pp-case-link">
             Ver caso completo
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
           </a>

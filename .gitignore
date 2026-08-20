@@ -19,3 +19,7 @@ dist/
 
 # masters de video: se encodean a assets/video/, no van al repo
 assets/*.mov
+
+# imágenes originales pesadas: se optimizan a .jpg y esas son las que se publican
+assets/kalis.jpg.png
+assets/kalis2.png
